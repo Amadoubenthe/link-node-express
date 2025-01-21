@@ -14,6 +14,19 @@ app.get("/", (_, res) => {
   res.send("Hello World express node !");
 });
 
+app.get("/api/posts", async (_, res) => {
+  try {
+    const posts = await Post.find({});
+    res.status(200).json({
+      message: "Get all",
+      data: posts,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json(error);
+  }
+});
+
 app.post("/api/posts", async (req, res) => {
   try {
     const p = new Post(req.body);
@@ -26,10 +39,23 @@ app.post("/api/posts", async (req, res) => {
   }
 });
 
-app.get("/api/posts", async (_, res) => {
+app.get("/api/posts/:id", async (req, res) => {
   try {
-    const posts = await Post.find({});
-    res.status(200).json(posts);
+    const id = req.params.id;
+    const post = await Post.findById(id);
+    if (post === null) {
+      res.status(200).json({
+        message: "Not found",
+      });
+    } else {
+      console.log(id);
+      console.log(post);
+
+      res.status(200).json({
+        message: "Get",
+        data: post,
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(400).json(error);
