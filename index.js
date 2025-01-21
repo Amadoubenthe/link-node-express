@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const Post = require("./models/post.model");
 const postRoute = require("./routes/post.route");
 
 dotenv.config();
@@ -12,7 +11,7 @@ const port = process.env.PORT | 8000;
 const dbUrl = process.env.DB_URL;
 
 app.get("/", (_, res) => {
-  res.send("Hello World express node !");
+  res.send("Hello World!");
 });
 
 app.use("/api/posts", postRoute);
