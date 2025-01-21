@@ -72,10 +72,33 @@ app.put("/api/posts/:id", async (req, res) => {
   try {
     const update = req.body;
     const doc = await Post.findByIdAndUpdate(id, update);
-    doc.save();
+    await doc.save();
     return res.status(404).json({
       success: true,
       message: "Updated",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json(error);
+  }
+});
+
+app.delete("/api/posts/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({
+      success: false,
+      message: "Invalid post id",
+    });
+  }
+
+  try {
+    await Post.findOneAndDelete(id);
+
+    return res.status(404).json({
+      success: true,
+      message: "Deleted",
     });
   } catch (error) {
     console.error(error);
