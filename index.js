@@ -28,6 +28,14 @@ app.get("/api/posts", async (_, res) => {
 });
 
 app.post("/api/posts", async (req, res) => {
+  const post = req.body;
+
+  if (!post.title || !post.content || !post.author) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide all fields" });
+  }
+
   try {
     const p = new Post(req.body);
     const postSaved = await p.save();
@@ -40,8 +48,16 @@ app.post("/api/posts", async (req, res) => {
 });
 
 app.get("/api/posts/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({
+      success: false,
+      message: "Invalid post id",
+    });
+  }
+
   try {
-    const id = req.params.id;
     const post = await Post.findById(id);
     if (post === null) {
       res.status(200).json({
